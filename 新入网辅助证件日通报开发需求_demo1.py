@@ -250,10 +250,25 @@ def main():
     output_file_path_day_up=f'{root_directory}{current_month}月辅助证件上传率日通报_day.xlsx'
     output_file_path_month_up=f'{root_directory}{current_month}月辅助证件上传率日通报_month.xlsx'
     title_day = f'{current_month}月{current_day}日辅助上传情况'
-    title_month = f'{current_month}.01-6.{current_day}辅助证件上传情况（180天口径）'
+    title_month = f'{current_month}.01-{current_month}.{current_day}辅助证件上传情况（180天口径）'
     save_file_up(output_file_path_day,output_file_path_day_up)
     save_file_up(output_file_path_month,output_file_path_month_up)
     save_file_up_concat(output_file_path_day_up,output_file_path_month_up,output_file_path_up,title_day,title_month,formatted_two_days_ago)
 
+    # 指定Excel文件路径
+    excel_file_path = 'path_to_your_excel_file.xlsx'
+
+    # 读取Excel文件中名为'分区县'的工作表
+    df = pd.read_excel(excel_file_path, sheet_name='分区县', engine='openpyxl')
+
+    # 筛选出列名为'区县'的值为'全通路'的行
+    filtered_df = df[df['区县'] == '全通路']
+    # 将'上传率'列的百分比转换为数值
+    df['上传率'] = df['上传率'].str.rstrip('%').astype('float') / 100
+    # 筛选出'上传率'大于80%的行
+    result_df = filtered_df[filtered_df['上传率'] > 80]
+
+    # 打印出上传率大于80%的区县
+    print(result_df[['区县', '上传率']])
 if __name__ == "__main__":
     main()
